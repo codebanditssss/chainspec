@@ -14,7 +14,7 @@ async function main() {
     console.log(`\nTesting ERC20 Template...`);
     let content = fs.readFileSync(erc20Template, 'utf8');
     content = content.replace(/{{CONTRACT_NAME}}/g, "TestToken");
-    content = content.replace(/{{IMPORTS}}/g, 'import "@openzeppelin/contracts/token/ERC20/ERC20.sol";');
+    content = content.replace(/\/\/ {{IMPORTS}}/g, 'import "@openzeppelin/contracts/token/ERC20/ERC20.sol";');
     content = content.replace(/{{INHERITANCE}}/g, "ERC20");
     content = content.replace(/\/\/ {{STATE_VARIABLES}}/g, "");
     content = content.replace(/\/\/ {{EVENTS}}/g, "");
@@ -35,7 +35,7 @@ async function main() {
         let vaultContent = fs.readFileSync(vaultTemplate, 'utf8');
         vaultContent = vaultContent.replace(/{{CONTRACT_NAME}}/g, "TestVault");
         vaultContent = vaultContent.replace(/\/\/ {{IMPORTS}}/g, "");
-        vaultContent = vaultContent.replace(/{{INHERITANCE}}/g, ""); // No extra inheritance
+        vaultContent = vaultContent.replace(/, {{INHERITANCE}}/g, ""); // Fix trailing comma
         vaultContent = vaultContent.replace(/\/\/ {{ROLES_DEFINITION}}/g, 'bytes32 public constant STRATEGIST_ROLE = keccak256("STRATEGIST_ROLE");');
         vaultContent = vaultContent.replace(/\/\/ {{STATE_VARIABLES}}/g, "");
         vaultContent = vaultContent.replace(/\/\/ {{EVENTS}}/g, "");
@@ -56,7 +56,7 @@ async function main() {
     // --- COMPILE ---
     try {
         console.log("\n🔨 Compiling with Hardhat...");
-        execSync('npx hardhat compile', { stdio: 'inherit', cwd: path.join(__dirname, '../') });
+        execSync('npx hardhat compile --force', { stdio: 'inherit', cwd: path.join(__dirname, '../') });
         console.log("🎉 ALL TEMPLATES VALIDATED SUCCESSFULLY!");
     } catch (err) {
         console.error("❌ Hardhat Compilation Failed (Check generated/ files)");

@@ -13,7 +13,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
  * @title TestVault
  * @notice Advanced DAO Treasury with Role-Based Access and Time-Locks
  */
-contract TestVault is AccessControl, ReentrancyGuard, Pausable,  {
+contract TestVault is AccessControl, ReentrancyGuard, Pausable {
     using SafeERC20 for IERC20;
 
     // ==========================================
