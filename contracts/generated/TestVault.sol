@@ -7,34 +7,34 @@ import "@openzeppelin/contracts/utils/Pausable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-// {{IMPORTS}}
+
 
 /**
- * @title {{CONTRACT_NAME}}
+ * @title TestVault
  * @notice Advanced DAO Treasury with Role-Based Access and Time-Locks
  */
-contract {{CONTRACT_NAME}} is AccessControl, ReentrancyGuard, Pausable, {{INHERITANCE}} {
+contract TestVault is AccessControl, ReentrancyGuard, Pausable,  {
     using SafeERC20 for IERC20;
 
     // ==========================================
     // State Variables
     // ==========================================
     
-    // {{ROLES_DEFINITION}}
+    bytes32 public constant STRATEGIST_ROLE = keccak256("STRATEGIST_ROLE");
     // Example: bytes32 public constant STRATEGIST_ROLE = keccak256("STRATEGIST_ROLE");
 
     IERC20 public immutable token;
     mapping(address => uint256) public balances;
     mapping(address => uint256) public lastDepositTime;
     
-    // {{STATE_VARIABLES}}
+    
 
     // ==========================================
     // Events
     // ==========================================
     event Deposit(address indexed user, uint256 amount);
     event Withdraw(address indexed user, uint256 amount);
-    // {{EVENTS}}
+    
 
     // ==========================================
     // Constructor
@@ -43,7 +43,7 @@ contract {{CONTRACT_NAME}} is AccessControl, ReentrancyGuard, Pausable, {{INHERI
         token = IERC20(_token);
         _grantRole(DEFAULT_ADMIN_ROLE, _admin);
         
-        // {{CONSTRUCTOR_LOGIC}}
+        _grantRole(STRATEGIST_ROLE, _admin);
     }
 
     // ==========================================
@@ -56,7 +56,7 @@ contract {{CONTRACT_NAME}} is AccessControl, ReentrancyGuard, Pausable, {{INHERI
         balances[msg.sender] += amount;
         lastDepositTime[msg.sender] = block.timestamp;
         
-        // {{DEPOSIT_HOOKS}}
+        
         
         emit Deposit(msg.sender, amount);
     }
@@ -64,7 +64,7 @@ contract {{CONTRACT_NAME}} is AccessControl, ReentrancyGuard, Pausable, {{INHERI
     function withdraw(uint256 amount) external nonReentrant {
         require(balances[msg.sender] >= amount, "Insufficient balance");
         
-        // {{TIMELOCK_CHECK}}
+        
         // Example: require(block.timestamp >= lastDepositTime[msg.sender] + 1 days, "Locked");
 
         balances[msg.sender] -= amount;
@@ -85,5 +85,5 @@ contract {{CONTRACT_NAME}} is AccessControl, ReentrancyGuard, Pausable, {{INHERI
         _unpause();
     }
 
-    // {{FUNCTIONS}}
+    
 }
