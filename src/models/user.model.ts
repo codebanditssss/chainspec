@@ -29,6 +29,3 @@ export interface IAuthResponse {
     user: IUserResponse;
     token: string;
 }
-
-// In-memory user storage (replace with database later)
-export const users: IUser[] = [];

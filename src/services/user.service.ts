@@ -1,16 +1,14 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { v4 as uuidv4 } from 'uuid';
 import {
-    IUser,
     IUserRegistration,
     IUserLogin,
     IUserResponse,
     IAuthResponse,
-    users
 } from '../models/user.model';
 import { config } from '../config/env';
 import { AppError } from '../middleware/error.middleware';
+import { prisma } from '../config/prisma';
 
 export class UserService {
     private static hashPassword(password: string): Promise<string> {
@@ -21,7 +19,7 @@ export class UserService {
         return bcrypt.compare(password, hash);
     }
 
-    private static generateToken(user: IUser): string {
+    private static generateToken(user: { id: string; email: string; username: string }): string {
         const options: jwt.SignOptions = {
             expiresIn: config.jwtExpiresIn
         };
@@ -37,7 +35,7 @@ export class UserService {
         );
     }
 
-    private static sanitizeUser(user: IUser): IUserResponse {
+    private static sanitizeUser(user: { id: string; email: string; username: string; createdAt: Date }): IUserResponse {
         return {
             id: user.id,
             email: user.email,
@@ -48,13 +46,19 @@ export class UserService {
 
     static async register(data: IUserRegistration): Promise<IAuthResponse> {
         // Check if user already exists
-        const existingUser = users.find(u => u.email === data.email);
+        const existingUser = await prisma.user.findUnique({
+            where: { email: data.email }
+        });
+
         if (existingUser) {
             throw new AppError('User with this email already exists', 400);
         }
 
         // Check if username is taken
-        const existingUsername = users.find(u => u.username === data.username);
+        const existingUsername = await prisma.user.findUnique({
+            where: { username: data.username }
+        });
+
         if (existingUsername) {
             throw new AppError('Username already taken', 400);
         }
@@ -62,17 +66,14 @@ export class UserService {
         // Hash password
         const hashedPassword = await this.hashPassword(data.password);
 
-        // Create user
-        const newUser: IUser = {
-            id: uuidv4(),
-            email: data.email,
-            username: data.username,
-            password: hashedPassword,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        };
-
-        users.push(newUser);
+        // Create user in database
+        const newUser = await prisma.user.create({
+            data: {
+                email: data.email,
+                username: data.username,
+                password: hashedPassword,
+            }
+        });
 
         // Generate token
         const token = this.generateToken(newUser);
@@ -85,7 +86,10 @@ export class UserService {
 
     static async login(data: IUserLogin): Promise<IAuthResponse> {
         // Find user
-        const user = users.find(u => u.email === data.email);
+        const user = await prisma.user.findUnique({
+            where: { email: data.email }
+        });
+
         if (!user) {
             throw new AppError('Invalid email or password', 401);
         }
@@ -106,14 +110,27 @@ export class UserService {
     }
 
     static async getUserById(id: string): Promise<IUserResponse> {
-        const user = users.find(u => u.id === id);
+        const user = await prisma.user.findUnique({
+            where: { id }
+        });
+
         if (!user) {
             throw new AppError('User not found', 404);
         }
+
         return this.sanitizeUser(user);
     }
 
     static async getAllUsers(): Promise<IUserResponse[]> {
-        return users.map(user => this.sanitizeUser(user));
+        const users = await prisma.user.findMany({
+            select: {
+                id: true,
+                email: true,
+                username: true,
+                createdAt: true,
+            }
+        });
+
+        return users;
     }
 }
