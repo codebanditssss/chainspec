@@ -289,7 +289,8 @@ ${body}
     private static generateFunctionDocs(fn: FunctionSpec): string {
         const lines: string[] = ['/**'];
 
-        lines.push(`     * @notice ${fn.description}`);
+        const description = fn.description?.trim() || 'Function implementation';
+        lines.push(`     * @notice ${description}`);
 
         if (fn.parameters && fn.parameters.length > 0) {
             fn.parameters.forEach(p => {
