@@ -36,7 +36,7 @@ export default function LandingPage() {
                             </Button>
                         </Link>
                         <a
-                            href="https://github.com/YOUR_USERNAME/chainspec"
+                            href="https://github.com/codebanditssss/chainspec"
                             target="_blank"
                             rel="noopener noreferrer"
                         >

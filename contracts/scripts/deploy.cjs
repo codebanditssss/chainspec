@@ -45,7 +45,6 @@ async function main() {
 
     if (hre.network.name !== "hardhat" && hre.network.name !== "localhost") {
         console.log("Waiting for block confirmations...");
-        // Wait a bit
         await new Promise(resolve => setTimeout(resolve, 15000));
 
         console.log("Verifying on Etherscan...");
@@ -59,6 +58,19 @@ async function main() {
             console.log("Verification failed:", err.message);
         }
     }
+
+    // Save deployment info for Frontend
+    const deploymentPath = path.join(__dirname, "../../dashboard/public/deployment.json");
+    const deploymentData = {
+        contractName: contractName,
+        address: address,
+        network: hre.network.name,
+        timestamp: new Date().toISOString(),
+        verifiedUrl: `https://${hre.network.name === 'sepolia' ? 'sepolia.' : ''}etherscan.io/address/${address}#code`
+    };
+
+    fs.writeFileSync(deploymentPath, JSON.stringify(deploymentData, null, 2));
+    console.log(`Deployment info saved to ${deploymentPath}`);
 }
 
 main().catch((error) => {
