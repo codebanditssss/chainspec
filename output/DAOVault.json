@@ -1,0 +1,272 @@
+{
+  "contractName": "DAOVault",
+  "securityRequirements": [
+    "Role-based access control: Only designated roles can perform privileged actions",
+    "Timelock mechanism: Withdrawals require waiting period for security",
+    "Reentrancy protection: All external calls protected against reentrancy",
+    "Pausable functionality: Admin can pause contract in emergencies",
+    "State invariant: Total deposits equals sum of all user balances",
+    "No overflow/underflow vulnerabilities (Solidity 0.8+)"
+  ],
+  "functions": [
+    {
+      "name": "constructor",
+      "description": "Initialize the DAO vault with a specific ERC20 token and admin",
+      "parameters": [
+        {
+          "type": "address",
+          "name": "_token"
+        },
+        {
+          "type": "address",
+          "name": "_admin"
+        }
+      ],
+      "preconditions": [
+        "Called once during deployment",
+        "_token and _admin must be valid addresses"
+      ],
+      "postconditions": [
+        "Token address set",
+        "admin granted DEFAULT_ADMIN_ROLE and STRATEGIST_ROLE"
+      ],
+      "security": "Public, initializes access control",
+      "events": [],
+      "returns": "None"
+    },
+    {
+      "name": "deposit",
+      "description": "Deposit tokens into the vault",
+      "parameters": [
+        {
+          "type": "uint256",
+          "name": "amount"
+        }
+      ],
+      "preconditions": [
+        "Caller has approved vault for \\u003e= amount tokens",
+        "amount \\u003e 0",
+        "contract not paused"
+      ],
+      "postconditions": [
+        "Caller's balance increases by amount",
+        "tokens transferred to vault",
+        "lastDepositTime updated"
+      ],
+      "security": "NonReentrant, WhenNotPaused, SafeERC20 transfer",
+      "events": [
+        "Emit Deposit(msg.sender",
+        "amount)"
+      ],
+      "returns": "None"
+    },
+    {
+      "name": "withdraw",
+      "description": "Withdraw tokens from the vault",
+      "parameters": [
+        {
+          "type": "uint256",
+          "name": "amount"
+        }
+      ],
+      "preconditions": [
+        "Caller has balance \\u003e= amount",
+        "timelock period has passed since last deposit"
+      ],
+      "postconditions": [
+        "Caller's balance decreases by amount",
+        "tokens transferred to caller"
+      ],
+      "security": "NonReentrant, timelock check, SafeERC20 transfer",
+      "events": [
+        "Emit Withdraw(msg.sender",
+        "amount)"
+      ],
+      "returns": "None"
+    },
+    {
+      "name": "emergencyWithdraw",
+      "description": "Emergency withdrawal bypassing timelock (admin only)",
+      "parameters": [],
+      "preconditions": [
+        "Caller has DEFAULT_ADMIN_ROLE",
+        "caller has balance \\u003e 0"
+      ],
+      "postconditions": [
+        "All of caller's balance withdrawn",
+        "balance set to 0"
+      ],
+      "security": "OnlyRole(DEFAULT_ADMIN_ROLE), NonReentrant",
+      "events": [
+        "Emit EmergencyWithdraw(msg.sender",
+        "amount)"
+      ],
+      "returns": "None"
+    },
+    {
+      "name": "pause",
+      "description": "Pause the contract to prevent deposits",
+      "parameters": [],
+      "preconditions": [
+        "Caller has DEFAULT_ADMIN_ROLE",
+        "contract not already paused"
+      ],
+      "postconditions": [
+        "Contract is paused",
+        "deposits disabled"
+      ],
+      "security": "OnlyRole(DEFAULT_ADMIN_ROLE)",
+      "events": [
+        "Emit Paused(msg.sender)"
+      ],
+      "returns": "None"
+    },
+    {
+      "name": "unpause",
+      "description": "Unpause the contract to allow deposits",
+      "parameters": [],
+      "preconditions": [
+        "Caller has DEFAULT_ADMIN_ROLE",
+        "contract is paused"
+      ],
+      "postconditions": [
+        "Contract is unpaused",
+        "deposits enabled"
+      ],
+      "security": "OnlyRole(DEFAULT_ADMIN_ROLE)",
+      "events": [
+        "Emit Unpaused(msg.sender)"
+      ],
+      "returns": "None"
+    },
+    {
+      "name": "grantStrategist",
+      "description": "Grant strategist role to an account",
+      "parameters": [
+        {
+          "type": "address",
+          "name": "account"
+        }
+      ],
+      "preconditions": [
+        "Caller has DEFAULT_ADMIN_ROLE",
+        "account is valid address"
+      ],
+      "postconditions": [
+        "Account granted STRATEGIST_ROLE"
+      ],
+      "security": "OnlyRole(DEFAULT_ADMIN_ROLE)",
+      "events": [
+        "Emit RoleGranted(STRATEGIST_ROLE",
+        "account",
+        "msg.sender)"
+      ],
+      "returns": "None"
+    },
+    {
+      "name": "executeStrategy",
+      "description": "Execute strategy on behalf of vault (strategist only)",
+      "parameters": [
+        {
+          "type": "address",
+          "name": "target"
+        },
+        {
+          "type": "bytes",
+          "name": "calldata"
+        }
+      ],
+      "preconditions": [
+        "Caller has STRATEGIST_ROLE",
+        "target is whitelisted contract"
+      ],
+      "postconditions": [
+        "External call executed",
+        "state updated based on strategy"
+      ],
+      "security": "OnlyRole(STRATEGIST_ROLE), NonReentrant, validate target",
+      "events": [
+        "Emit StrategyExecuted(target",
+        "data)"
+      ],
+      "returns": "bytes result"
+    }
+  ],
+  "stateVariables": [
+    {
+      "name": "token",
+      "type": "IERC20",
+      "description": "The ERC20 token managed by this vault (immutable)"
+    },
+    {
+      "name": "balances",
+      "type": "mapping(address => uint256)",
+      "description": "User deposit balances"
+    },
+    {
+      "name": "lastDepositTime",
+      "type": "mapping(address => uint256)",
+      "description": "Last deposit timestamp for each user"
+    },
+    {
+      "name": "timelockPeriod",
+      "type": "uint256",
+      "description": "Minimum time between deposit and withdrawal (e.g., 1 day)"
+    },
+    {
+      "name": "STRATEGIST_ROLE",
+      "type": "bytes32",
+      "description": "Role identifier for strategy executors"
+    },
+    {
+      "name": "whitelistedTargets",
+      "type": "mapping(address => bool)",
+      "description": "Approved contracts for strategy execution"
+    }
+  ],
+  "events": [
+    {
+      "name": "Deposit",
+      "parameters": "address indexed user, uint256 amount",
+      "description": "Emitted on successful deposit"
+    },
+    {
+      "name": "Withdraw",
+      "parameters": "address indexed user, uint256 amount",
+      "description": "Emitted on successful withdrawal"
+    },
+    {
+      "name": "EmergencyWithdraw",
+      "parameters": "address indexed admin, uint256 amount",
+      "description": "Emitted on emergency withdrawal"
+    },
+    {
+      "name": "StrategyExecuted",
+      "parameters": "address indexed target, bytes data",
+      "description": "Emitted when strategy is executed"
+    },
+    {
+      "name": "Paused",
+      "parameters": "address account",
+      "description": "Emitted when contract is paused (inherited from OpenZeppelin)"
+    },
+    {
+      "name": "Unpaused",
+      "parameters": "address account",
+      "description": "Emitted when contract is unpaused (inherited from OpenZeppelin)"
+    },
+    {
+      "name": "RoleGranted",
+      "parameters": "bytes32 indexed role, address indexed account, address indexed sender",
+      "description": "Emitted on role grants (inherited)"
+    }
+  ],
+  "stateInvariants": [
+    "sum(balances[all users]) <= token.balanceOf(address(this))",
+    "balances[user] >= 0 (enforced by Solidity 0.8+)",
+    "lastDepositTime[user] <= block.timestamp",
+    "timelockPeriod >= 0",
+    "\"If paused, deposits revert\"",
+    "\"Only whitelisted targets can be called in executeStrategy\""
+  ]
+}

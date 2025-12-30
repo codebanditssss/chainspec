@@ -198,11 +198,16 @@ export class SolidityGenerator {
 
         // Filter out constructor and standard ERC20 functions (inherited)
         const standardFunctions = ['constructor', 'transfer', 'approve', 'transferfrom', 'balanceof', 'allowance'];
-        const customFunctions = functions.filter(fn =>
-            !standardFunctions.includes(fn.name.toLowerCase())
-        );
 
-        if (customFunctions.length === 0) return '// Functions: mint() and standard ERC20 functions inherited';
+        // Filter out DAOVault template functions (already implemented)
+        const daoVaultTemplateFunctions = ['deposit', 'withdraw', 'pause', 'unpause'];
+
+        const customFunctions = functions.filter(fn => {
+            const fnLower = fn.name.toLowerCase();
+            return !standardFunctions.includes(fnLower) && !daoVaultTemplateFunctions.includes(fnLower);
+        });
+
+        if (customFunctions.length === 0) return '// Custom functions already implemented in template';
 
         return customFunctions.map(fn => this.generateFunction(fn)).join('\n\n    ');
     }
