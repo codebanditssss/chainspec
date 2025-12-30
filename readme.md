@@ -325,7 +325,7 @@ Built at **HackXios 2K25** for the **Kiro Prize Track**.
 ##  Documentation
 
 - [HERO Folder](kiro/HERO/) - Planning and architecture
-- [MCP Design](kiro/06_mcp_design.md) - Technical MCP architecture
+- [MCP Design](kiro/03_mcp_design.md) - Technical MCP architecture
 
 ---
 
