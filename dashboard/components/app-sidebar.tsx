@@ -33,16 +33,12 @@ export function AppSidebar({ className }: SidebarProps) {
                         ChainSpec
                     </h2>
                     <div className="space-y-1">
-                        <Link href="/">
-                            <Button variant={pathname === "/" ? "secondary" : "ghost"} className="w-full justify-start">
+                        <Link href="/dashboard">
+                            <Button variant={pathname === "/dashboard" ? "secondary" : "ghost"} className="w-full justify-start">
                                 <LayoutDashboard className="mr-2 h-4 w-4" />
                                 Projects
                             </Button>
                         </Link>
-                        <Button variant="ghost" className="w-full justify-start text-muted-foreground/50">
-                            <Zap className="mr-2 h-4 w-4" />
-                            Activity (Soon)
-                        </Button>
                     </div>
                 </div>
                 <div className="px-3 py-2">
@@ -58,27 +54,16 @@ export function AppSidebar({ className }: SidebarProps) {
                         </Link>
                     </div>
                 </div>
-                <div className="px-3 py-2">
-                    <h2 className="mb-2 px-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                        Tools
-                    </h2>
-                    <div className="space-y-1">
-                        <Button variant="ghost" className="w-full justify-start">
-                            <ShieldAlert className="mr-2 h-4 w-4" />
-                            Security Audit
-                        </Button>
-                    </div>
-                </div>
             </div>
             <div className="absolute bottom-4 left-0 w-full px-6">
                 <Separator className="my-4" />
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                        <span className="font-bold text-xs text-primary">K</span>
+                        <span className="font-bold text-xs text-primary">C</span>
                     </div>
                     <div className="flex flex-col">
-                        <span className="font-medium text-foreground">Kiki's Team</span>
-                        <span className="text-xs">Free Plan</span>
+                        <span className="font-medium text-foreground">ChainSpec</span>
+                        <span className="text-xs">HackXios 2K25</span>
                     </div>
                 </div>
             </div>

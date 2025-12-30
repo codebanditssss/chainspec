@@ -565,8 +565,8 @@
       ]
     },
     "C:\\Users\\Khushi\\chainspec\\contracts\\generated\\ECOToken.sol": {
-      "lastModificationDate": 1767094181720,
-      "contentHash": "87351518f14bdad55db9436d9fc93dc3",
+      "lastModificationDate": 1767104268618,
+      "contentHash": "a8a2352dde2e10d6f368e28a66d4b8e2",
       "sourceName": "generated/ECOToken.sol",
       "solcConfig": {
         "version": "0.8.20",
@@ -600,6 +600,83 @@
       ],
       "artifacts": [
         "ECOToken"
+      ]
+    },
+    "C:\\Users\\Khushi\\chainspec\\contracts\\node_modules\\@openzeppelin\\contracts\\access\\Ownable.sol": {
+      "lastModificationDate": 1767077919283,
+      "contentHash": "d3c790edc9ccf808a17c5a6cd13614fd",
+      "sourceName": "@openzeppelin/contracts/access/Ownable.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../utils/Context.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "Ownable"
+      ]
+    },
+    "C:\\Users\\Khushi\\chainspec\\contracts\\generated\\SecureToken.sol": {
+      "lastModificationDate": 1767104129593,
+      "contentHash": "e4f89c6d74957405b38d300934a66f34",
+      "sourceName": "generated/SecureToken.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol",
+        "@openzeppelin/contracts/access/Ownable.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "SecureToken"
       ]
     }
   }

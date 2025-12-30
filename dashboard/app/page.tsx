@@ -1,152 +1,197 @@
 "use client";
 
 import Link from "next/link";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { FileCode, ArrowRight, ShieldCheck, AlertTriangle, Clock } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { ArrowRight, Zap, Shield, Code, FileCode } from "lucide-react";
 
-// Mock Data - In real app, this comes from parsing the ./kiro folder
-const projects = [
-  {
-    id: "01_erc20",
-    name: "MyGameToken",
-    type: "ERC20",
-    status: "audit_ready",
-    lastEdited: "2 hours ago",
-    securityScore: 98,
-    issues: 0,
-  },
-  {
-    id: "02_dao_vault",
-    name: "DAO Treasury Vault",
-    type: "Governance",
-    status: "in_progress",
-    lastEdited: "5 hours ago",
-    securityScore: 85,
-    issues: 2,
-  },
-  {
-    id: "03_nft_drop",
-    name: "CyberPunk NFT",
-    type: "ERC721",
-    status: "draft",
-    lastEdited: "1 day ago",
-    securityScore: 40,
-    issues: 5,
-  }
-];
+export default function LandingPage() {
+    return (
+        <div className="min-h-screen bg-background">
+            {/* Hero Section */}
+            <div className="container mx-auto px-4 pt-20 pb-16">
+                <div className="max-w-4xl mx-auto text-center space-y-8">
+                    {/* Badge */}
+                    <Badge variant="outline" className="px-4 py-1.5">
+                        Built with Kiro IDE
+                    </Badge>
 
-export default function Home() {
-  return (
-    <div className="space-y-8">
-      {/* Header Section */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">My Projects</h1>
-          <p className="text-muted-foreground mt-1">
-            Manage your ChainSpec contracts and view security analysis.
-          </p>
-        </div>
-        <Link href="/project/new">
-          <Button>
-            <FileCode className="mr-2 h-4 w-4" />
-            New Specification
-          </Button>
-        </Link>
-      </div>
+                    {/* Headline */}
+                    <h1 className="text-5xl md:text-6xl font-bold tracking-tight">
+                        Spec-First Smart Contract Framework
+                    </h1>
 
-      {/* Projects Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {projects.map((project) => (
-          <Link href={`/project/${project.id}`} key={project.id} className="group">
-            <Card className="hover:border-primary/50 transition-all cursor-pointer h-full flex flex-col">
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="space-y-1">
-                    <CardTitle className="group-hover:text-primary transition-colors">
-                      {project.name}
-                    </CardTitle>
-                    <CardDescription>{project.type}</CardDescription>
-                  </div>
-                  <Badge variant={
-                    project.status === 'audit_ready' ? 'default' :
-                      project.status === 'in_progress' ? 'secondary' : 'outline'
-                  }>
-                    {project.status.replace('_', ' ')}
-                  </Badge>
-                </div>
-              </CardHeader>
+                    {/* Subheadline */}
+                    <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                        Generate production-ready, secure Solidity contracts from markdown specifications using AI agents.
+                        98% faster than manual coding.
+                    </p>
 
-              <CardContent className="flex-1">
-                <div className="flex items-center justify-between text-sm mb-4">
-                  <div className="flex items-center text-muted-foreground">
-                    <Clock className="mr-1 h-3 w-3" />
-                    {project.lastEdited}
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Security Score</span>
-                    <span className={
-                      project.securityScore > 90 ? "text-green-500 font-bold" :
-                        project.securityScore > 70 ? "text-yellow-500 font-bold" :
-                          "text-red-500 font-bold"
-                    }>
-                      {project.securityScore}/100
-                    </span>
-                  </div>
-                  {/* Simple Progress Bar */}
-                  <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
-                    <div
-                      className={`h-full rounded-full ${project.securityScore > 90 ? "bg-green-500" :
-                          project.securityScore > 70 ? "bg-yellow-500" : "bg-red-500"
-                        }`}
-                      style={{ width: `${project.securityScore}%` }}
-                    />
-                  </div>
-                </div>
-              </CardContent>
-
-              <CardFooter className="border-t bg-muted/20 p-4">
-                <div className="w-full flex items-center justify-between text-sm">
-                  {project.issues === 0 ? (
-                    <div className="flex items-center text-green-500">
-                      <ShieldCheck className="mr-1.5 h-4 w-4" />
-                      Secure
+                    {/* CTA Buttons */}
+                    <div className="flex gap-4 justify-center pt-4">
+                        <Link href="/dashboard">
+                            <Button size="lg" className="gap-2">
+                                Get Started
+                                <ArrowRight className="h-4 w-4" />
+                            </Button>
+                        </Link>
+                        <a
+                            href="https://github.com/codebanditssss/chainspec"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <Button size="lg" variant="outline" className="gap-2">
+                                <Code className="h-4 w-4" />
+                                View on GitHub
+                            </Button>
+                        </a>
                     </div>
-                  ) : (
-                    <div className="flex items-center text-yellow-500">
-                      <AlertTriangle className="mr-1.5 h-4 w-4" />
-                      {project.issues} Spec Issues
-                    </div>
-                  )}
-                  <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
-                </div>
-              </CardFooter>
-            </Card>
-          </Link>
-        ))}
 
-        {/* Create New Placeholder */}
-        <Link href="/project/new" className="group">
-          <Card className="h-full border-dashed hover:border-primary/50 hover:bg-muted/50 transition-all flex flex-col items-center justify-center p-6 text-center cursor-pointer">
-            <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-              <FileCode className="h-6 w-6 text-muted-foreground" />
+                    {/* Stats */}
+                    <div className="grid grid-cols-3 gap-8 pt-12 max-w-2xl mx-auto">
+                        <div>
+                            <div className="text-3xl font-bold">98%</div>
+                            <div className="text-sm text-muted-foreground">Time Saved</div>
+                        </div>
+                        <div>
+                            <div className="text-3xl font-bold">Zero</div>
+                            <div className="text-sm text-muted-foreground">Vulnerabilities</div>
+                        </div>
+                        <div>
+                            <div className="text-3xl font-bold">2 min</div>
+                            <div className="text-sm text-muted-foreground">Spec to Deploy</div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <h3 className="font-semibold text-lg mb-1">Create Specification</h3>
-            <p className="text-sm text-muted-foreground">Start a new smart contract from scratch using Kiro.</p>
-          </Card>
-        </Link>
-      </div>
-    </div>
-  );
+
+            {/* Features Section */}
+            <div className="container mx-auto px-4 py-16">
+                <div className="max-w-5xl mx-auto">
+                    <h2 className="text-3xl font-bold text-center mb-12">Why ChainSpec?</h2>
+
+                    <div className="grid md:grid-cols-3 gap-8">
+                        {/* Feature 1 */}
+                        <div className="space-y-4">
+                            <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <Zap className="h-6 w-6 text-primary" />
+                            </div>
+                            <h3 className="text-xl font-semibold">Lightning Fast</h3>
+                            <p className="text-muted-foreground">
+                                From markdown spec to deployed contract in under 2 minutes.
+                                No boilerplate, no copy-paste.
+                            </p>
+                        </div>
+
+                        {/* Feature 2 */}
+                        <div className="space-y-4">
+                            <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <Shield className="h-6 w-6 text-primary" />
+                            </div>
+                            <h3 className="text-xl font-semibold">Security First</h3>
+                            <p className="text-muted-foreground">
+                                Template-enforced security patterns. Every contract inherits
+                                OpenZeppelin's battle-tested code.
+                            </p>
+                        </div>
+
+                        {/* Feature 3 */}
+                        <div className="space-y-4">
+                            <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <FileCode className="h-6 w-6 text-primary" />
+                            </div>
+                            <h3 className="text-xl font-semibold">Kiro Powered</h3>
+                            <p className="text-muted-foreground">
+                                Integrated with Kiro IDE via MCP protocol. AI agents handle
+                                code generation and testing.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* How It Works */}
+            <div className="container mx-auto px-4 py-16">
+                <div className="max-w-4xl mx-auto">
+                    <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
+
+                    <div className="space-y-8">
+                        {/* Step 1 */}
+                        <div className="flex gap-6 items-start">
+                            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
+                                1
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-semibold mb-2">Write Your Specification</h3>
+                                <p className="text-muted-foreground">
+                                    Define your contract requirements in simple markdown.
+                                    Specify security rules, functions, and access control.
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Step 2 */}
+                        <div className="flex gap-6 items-start">
+                            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
+                                2
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-semibold mb-2">Generate Solidity</h3>
+                                <p className="text-muted-foreground">
+                                    Click generate and watch AI produce production-ready Solidity
+                                    with proper imports, modifiers, and security patterns.
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Step 3 */}
+                        <div className="flex gap-6 items-start">
+                            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
+                                3
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-semibold mb-2">Deploy to Ethereum</h3>
+                                <p className="text-muted-foreground">
+                                    One command deploys to Sepolia or Mainnet. Automatic compilation,
+                                    verification, and Etherscan integration.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* CTA */}
+                    <div className="text-center pt-12">
+                        <Link href="/dashboard">
+                            <Button size="lg">
+                                Start Building
+                                <ArrowRight className="ml-2 h-4 w-4" />
+                            </Button>
+                        </Link>
+                    </div>
+                </div>
+            </div>
+
+            {/* Footer */}
+            <div className="border-t border-border mt-16">
+                <div className="container mx-auto px-4 py-8">
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
+                        <div>
+                            Built with Kiro IDE for HackXios 2K25
+                        </div>
+                        <div className="flex gap-6">
+                            <a href="https://kiro.dev" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">
+                                Kiro IDE
+                            </a>
+                            <a href="https://github.com/YOUR_USERNAME/chainspec" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">
+                                GitHub
+                            </a>
+                            <a href="https://etherscan.io" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">
+                                Etherscan
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 }
