@@ -3,11 +3,23 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Zap, Shield, Code, FileCode } from "lucide-react";
+import { ArrowRight, Zap, Shield, Code, FileCode, Terminal, Box } from "lucide-react";
 
 export default function LandingPage() {
     return (
         <div className="min-h-screen bg-background">
+            {/* Header / Nav */}
+            <div className="border-b border-border/40 bg-background/50 backdrop-blur sticky top-0 z-50">
+                <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <div className="bg-primary/10 p-1.5 rounded-md border border-primary/20">
+                            <Box className="h-5 w-5 text-primary" />
+                        </div>
+                        <span className="font-bold text-xl tracking-tight">ChainSpec</span>
+                    </div>
+                </div>
+            </div>
+
             {/* Hero Section */}
             <div className="container mx-auto px-4 pt-20 pb-16">
                 <div className="max-w-4xl mx-auto text-center space-y-8">
@@ -28,11 +40,17 @@ export default function LandingPage() {
                     </p>
 
                     {/* CTA Buttons */}
-                    <div className="flex gap-4 justify-center pt-4">
+                    <div className="flex gap-4 justify-center pt-4 flex-wrap">
                         <Link href="/dashboard">
                             <Button size="lg" className="gap-2">
                                 Get Started
                                 <ArrowRight className="h-4 w-4" />
+                            </Button>
+                        </Link>
+                        <Link href="/guide">
+                            <Button size="lg" variant="secondary" className="gap-2">
+                                <Terminal className="h-4 w-4" />
+                                Setup Guide
                             </Button>
                         </Link>
                         <a
