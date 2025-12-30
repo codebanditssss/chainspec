@@ -34,7 +34,7 @@ export default function GuidePage() {
                         The Future is <span className="text-primary">Agentic</span>.
                     </h1>
                     <p className="text-xl text-muted-foreground leading-relaxed">
-                        ChainSpec is currently built as a <strong className="text-foreground">Local-First Agent</strong> to ensure maximum security for your private keys and codebase. The fully hosted Cloud OS is coming in Q3 2026.
+                        ChainSpec is currently built as a <strong className="text-foreground">Local-First Agent</strong> to ensure maximum security for your private keys and codebase. The fully hosted Cloud OS is coming in 2026.
                     </p>
                 </section>
 
