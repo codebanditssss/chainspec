@@ -30,6 +30,7 @@
   "homepage": "https://github.com/codebanditssss/chainspec#readme",
   "dependencies": {
     "@prisma/client": "^6.19.1",
+    "autoprefixer": "^10.4.23",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
@@ -37,6 +38,8 @@
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
