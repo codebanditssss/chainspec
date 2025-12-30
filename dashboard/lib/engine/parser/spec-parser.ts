@@ -25,7 +25,15 @@ export class SpecParser {
     // Extract contract name from markdown
     private static extractContractName(content: string): string {
         const match = content.match(/##\s*Contract Name\s*[\r\n]+([^\r\n]+)/i);
-        return match ? match[1].trim() : 'UnnamedContract';
+        if (!match) return 'UnnamedContract';
+
+        let name = match[1].trim();
+        // Replace spaces with underscores
+        name = name.replace(/\s+/g, '_');
+        // Remove invalid characters (keep strictly alphanumeric and underscores)
+        name = name.replace(/[^a-zA-Z0-9_]/g, '');
+
+        return name || 'UnnamedContract';
     }
 
     // Extract security requirements

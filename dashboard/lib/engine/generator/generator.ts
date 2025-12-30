@@ -7,6 +7,38 @@ export class SolidityGenerator {
     private static readonly OUTPUT_DIR = path.join(process.cwd(), '../contracts/generated');
 
     /**
+     * Sanitize contract name to be valid Solidity identifier
+     * - Removes spaces and converts to PascalCase
+     * - Removes special characters except underscore
+     * - Ensures it starts with a letter or underscore
+     */
+    private static sanitizeContractName(name: string): string {
+        // Remove leading/trailing whitespace
+        let sanitized = name.trim();
+
+        // Convert spaces to PascalCase (e.g., "gandalfthe great" -> "GandalftheGreat")
+        sanitized = sanitized.replace(/\s+(.)/g, (match, char) => char.toUpperCase());
+
+        // Capitalize first letter
+        sanitized = sanitized.charAt(0).toUpperCase() + sanitized.slice(1);
+
+        // Remove all characters except letters, numbers, and underscores
+        sanitized = sanitized.replace(/[^a-zA-Z0-9_]/g, '');
+
+        // If name starts with a number, prefix with underscore
+        if (/^[0-9]/.test(sanitized)) {
+            sanitized = '_' + sanitized;
+        }
+
+        // If empty after sanitization, use default
+        if (!sanitized) {
+            sanitized = 'GeneratedContract';
+        }
+
+        return sanitized;
+    }
+
+    /**
      * Generate Solidity contract from specification
      * @param spec - Parsed contract specification
      * @param templateName - Template to use (e.g., 'ERC20_Template', 'DAOVault_Template')
@@ -21,8 +53,11 @@ export class SolidityGenerator {
 
         let template = fs.readFileSync(templatePath, 'utf-8');
 
+        // Sanitize contract name
+        const sanitizedName = this.sanitizeContractName(spec.contractName);
+
         // Replace placeholders
-        template = this.replacePlaceholder(template, 'CONTRACT_NAME', spec.contractName);
+        template = this.replacePlaceholder(template, 'CONTRACT_NAME', sanitizedName);
         template = this.replacePlaceholder(template, 'IMPORTS', this.generateImports(spec));
         template = this.replacePlaceholder(template, 'INHERITANCE', this.generateInheritance(spec));
         template = this.replacePlaceholder(template, 'STATE_VARIABLES', this.generateStateVariables(spec.stateVariables));
@@ -367,7 +402,9 @@ ${body}
             fs.mkdirSync(dir, { recursive: true });
         }
 
-        const filePath = path.join(dir, `${contractName}.sol`);
+        // Sanitize filename
+        const sanitizedName = this.sanitizeContractName(contractName);
+        const filePath = path.join(dir, `${sanitizedName}.sol`);
         fs.writeFileSync(filePath, contractCode, 'utf-8');
 
         return filePath;

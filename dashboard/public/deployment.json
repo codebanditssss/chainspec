@@ -1,7 +1,7 @@
 {
-    "contractName": "ECOToken",
-    "address": "0xc78e1EeaEf2fC6C17c69D9f5690c7daeAE904186",
-    "network": "sepolia",
-    "timestamp": "2025-12-30T21:14:00.000Z",
-    "verifiedUrl": "https://sepolia.etherscan.io/address/0xc78e1EeaEf2fC6C17c69D9f5690c7daeAE904186#code"
+  "contractName": "ECOToken",
+  "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+  "network": "hardhat",
+  "timestamp": "2025-12-30T17:55:26.529Z",
+  "verifiedUrl": "https://etherscan.io/address/0x5FbDB2315678afecb367f032d93F642f64180aa3#code"
 }
