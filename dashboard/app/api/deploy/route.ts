@@ -5,13 +5,21 @@ import fs from "fs";
 
 export async function POST(request: NextRequest) {
     try {
-        const { network = "localhost" } = await request.json();
+        const { network = "localhost", privateKey } = await request.json();
 
         // Validate network
         const validNetworks = ["localhost", "sepolia", "hardhat"];
         if (!validNetworks.includes(network)) {
             return NextResponse.json(
                 { success: false, error: "Invalid network specified" },
+                { status: 400 }
+            );
+        }
+
+        // Validate private key for Sepolia
+        if (network === "sepolia" && !privateKey) {
+            return NextResponse.json(
+                { success: false, error: "Private key required for Sepolia deployment" },
                 { status: 400 }
             );
         }
@@ -29,7 +37,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Execute deployment
-        const result = await executeDeployment(contractsDir, network);
+        const result = await executeDeployment(contractsDir, network, privateKey);
 
         if (!result.success) {
             return NextResponse.json(
@@ -70,7 +78,8 @@ export async function POST(request: NextRequest) {
 
 function executeDeployment(
     contractsDir: string,
-    network: string
+    network: string,
+    privateKey?: string
 ): Promise<{ success: boolean; error?: string; logs?: string[] }> {
     return new Promise((resolve) => {
         const logs: string[] = [];
@@ -80,24 +89,31 @@ function executeDeployment(
             args.push("--network", network);
         }
 
-        const process = spawn("npx", args, {
+        // Set up environment variables
+        const envVars: NodeJS.ProcessEnv = { ...process.env };
+        if (privateKey) {
+            envVars.PRIVATE_KEY = privateKey;
+        }
+
+        const childProcess = spawn("npx", args, {
             cwd: contractsDir,
             shell: true,
+            env: envVars,
         });
 
-        process.stdout.on("data", (data) => {
+        childProcess.stdout.on("data", (data) => {
             const output = data.toString();
             console.log(output);
             logs.push(output);
         });
 
-        process.stderr.on("data", (data) => {
+        childProcess.stderr.on("data", (data) => {
             const output = data.toString();
             console.error(output);
             logs.push(`ERROR: ${output}`);
         });
 
-        process.on("close", (code) => {
+        childProcess.on("close", (code) => {
             if (code === 0) {
                 resolve({ success: true, logs });
             } else {
@@ -109,7 +125,7 @@ function executeDeployment(
             }
         });
 
-        process.on("error", (error) => {
+        childProcess.on("error", (error) => {
             resolve({
                 success: false,
                 error: error.message,
@@ -119,7 +135,7 @@ function executeDeployment(
 
         // Timeout after 5 minutes
         setTimeout(() => {
-            process.kill();
+            childProcess.kill();
             resolve({
                 success: false,
                 error: "Deployment timeout (5 minutes)",

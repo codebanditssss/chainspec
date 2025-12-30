@@ -9,6 +9,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
@@ -20,6 +21,9 @@ import {
     Rocket,
     Network,
     FileCode,
+    Eye,
+    EyeOff,
+    Wallet,
 } from "lucide-react";
 
 interface DeploymentModalProps {
@@ -50,24 +54,32 @@ export function DeploymentModal({
     const [result, setResult] = useState<DeploymentResult | null>(null);
     const [selectedNetwork, setSelectedNetwork] = useState(network);
     const [copied, setCopied] = useState(false);
+    const [privateKey, setPrivateKey] = useState("");
+    const [showPrivateKey, setShowPrivateKey] = useState(false);
 
     const handleDeploy = async () => {
         setDeploying(true);
         setResult(null);
 
         try {
-            await onDeploy(selectedNetwork);
+            // Call API with private key for Sepolia
+            const res = await fetch('/api/deploy', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    network: selectedNetwork,
+                    privateKey: selectedNetwork === 'sepolia' ? privateKey : undefined
+                })
+            });
+            const data = await res.json();
 
-            // Fetch the deployment result
-            const res = await fetch('/deployment.json');
-            if (res.ok) {
-                const data = await res.json();
+            if (data.success) {
                 setResult({
                     success: true,
                     ...data
                 });
             } else {
-                throw new Error("Failed to fetch deployment info");
+                throw new Error(data.error || "Deployment failed");
             }
         } catch (error: any) {
             setResult({
@@ -143,6 +155,46 @@ export function DeploymentModal({
                                     ? "Deploy to your local Hardhat network for testing"
                                     : "Deploy to Sepolia testnet (requires ETH in your wallet)"}
                             </p>
+
+                            {/* Private Key Input for Sepolia */}
+                            {selectedNetwork === "sepolia" && (
+                                <div className="space-y-3 mt-4">
+                                    <Alert className="bg-yellow-500/10 border-yellow-500/20">
+                                        <Wallet className="h-4 w-4 text-yellow-500" />
+                                        <AlertTitle className="text-yellow-500 text-sm">Wallet Private Key Required</AlertTitle>
+                                        <AlertDescription className="text-yellow-500/80 text-xs">
+                                            ⚠️ Your private key is only used for this deployment and is NOT stored anywhere.
+                                        </AlertDescription>
+                                    </Alert>
+
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium">Private Key</label>
+                                        <div className="relative">
+                                            <Input
+                                                type={showPrivateKey ? "text" : "password"}
+                                                placeholder="0x..."
+                                                value={privateKey}
+                                                onChange={(e) => setPrivateKey(e.target.value)}
+                                                className="pr-10 font-mono text-xs"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPrivateKey(!showPrivateKey)}
+                                                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                            >
+                                                {showPrivateKey ? (
+                                                    <EyeOff className="h-4 w-4" />
+                                                ) : (
+                                                    <Eye className="h-4 w-4" />
+                                                )}
+                                            </button>
+                                        </div>
+                                        <p className="text-xs text-muted-foreground">
+                                            Get from MetaMask: Account Details → Export Private Key
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
 
@@ -253,7 +305,10 @@ export function DeploymentModal({
                             <Button variant="outline" onClick={handleClose}>
                                 Cancel
                             </Button>
-                            <Button onClick={handleDeploy} disabled={!contractName}>
+                            <Button
+                                onClick={handleDeploy}
+                                disabled={!contractName || (selectedNetwork === 'sepolia' && !privateKey)}
+                            >
                                 <Rocket className="mr-2 h-4 w-4" />
                                 Deploy Now
                             </Button>
