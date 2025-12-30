@@ -565,8 +565,8 @@
       ]
     },
     "C:\\Users\\Khushi\\chainspec\\contracts\\generated\\ECOToken.sol": {
-      "lastModificationDate": 1767094181720,
-      "contentHash": "87351518f14bdad55db9436d9fc93dc3",
+      "lastModificationDate": 1767104268618,
+      "contentHash": "a8a2352dde2e10d6f368e28a66d4b8e2",
       "sourceName": "generated/ECOToken.sol",
       "solcConfig": {
         "version": "0.8.20",
