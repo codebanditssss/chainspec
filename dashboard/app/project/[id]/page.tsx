@@ -19,6 +19,9 @@ import { Play, Save, CheckCircle2, AlertTriangle, FileText, Code2 } from "lucide
 // Mock Data (Simulating what parser would output)
 const mockSpec = `# ECO Token Specification
 
+## Contract Name
+ECOToken
+
 ## Security Requirements
 1. **Access Control**: Only the admin can mint.
 2. **Pausable**: Emergency stop mechanism required.
