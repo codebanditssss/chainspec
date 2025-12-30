@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Terminal, Cloud, Shield, Cpu, Lock } from "lucide-react";
+import { ArrowLeft, Terminal, Cloud, Shield, Cpu, Lock, Box } from "lucide-react";
 
 export default function GuidePage() {
     return (
@@ -11,12 +11,17 @@ export default function GuidePage() {
             {/* Header */}
             <div className="border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
                 <div className="container max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-                    <Link href="/">
-                        <Button variant="ghost" size="sm" className="gap-2">
-                            <ArrowLeft className="h-4 w-4" />
-                            Back to Home
-                        </Button>
-                    </Link>
+                    <div className="flex items-center gap-4">
+                        <Link href="/">
+                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                                <ArrowLeft className="h-4 w-4" />
+                            </Button>
+                        </Link>
+                        <div className="flex items-center gap-2">
+                            <Box className="h-5 w-5 text-primary" />
+                            <span className="font-bold text-lg tracking-tight">ChainSpec Guide</span>
+                        </div>
+                    </div>
                     <Badge variant="outline" className="font-mono">
                         MISSION BRIEF: PROTOCOL ALPHA
                     </Badge>
