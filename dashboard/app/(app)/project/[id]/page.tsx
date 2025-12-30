@@ -14,7 +14,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Play, Save, CheckCircle2, AlertTriangle, FileText, Code2, Shield } from "lucide-react";
+import { Play, Save, CheckCircle2, AlertTriangle, FileText, Code2, Shield, Rocket } from "lucide-react";
+import { DeploymentModal } from "@/components/DeploymentModal";
 
 // Mock Data (Simulating what parser would output)
 const mockSpec = `# ECO Token Specification
@@ -73,20 +74,23 @@ export default function ProjectWorkspace({ params }: { params: Promise<{ id: str
     const [generatedCode, setGeneratedCode] = useState("");
     const [error, setError] = useState("");
     const [deployment, setDeployment] = useState<any>(null);
+    const [deployModalOpen, setDeployModalOpen] = useState(false);
+    const [contractName, setContractName] = useState("");
 
     // Fetch deployment status on load
-    useEffect(() => {
-        async function fetchDeployment() {
-            try {
-                const res = await fetch('/deployment.json');
-                if (res.ok) {
-                    const data = await res.json();
-                    setDeployment(data);
-                }
-            } catch (e) {
-                console.log("No deployment found");
+    const fetchDeployment = async () => {
+        try {
+            const res = await fetch('/deployment.json');
+            if (res.ok) {
+                const data = await res.json();
+                setDeployment(data);
             }
+        } catch (e) {
+            console.log("No deployment found");
         }
+    };
+
+    useEffect(() => {
         fetchDeployment();
     }, []);
 
@@ -108,6 +112,12 @@ export default function ProjectWorkspace({ params }: { params: Promise<{ id: str
             if (data.success) {
                 setGeneratedCode(data.code);
                 setShowCode(true);
+
+                // Extract contract name from generated code
+                const contractMatch = data.code.match(/contract\s+(\w+)/);
+                if (contractMatch) {
+                    setContractName(contractMatch[1]);
+                }
 
                 // Frontend-side Security Heuristics (Making it Dynamic)
                 const alerts = [];
@@ -155,6 +165,26 @@ export default function ProjectWorkspace({ params }: { params: Promise<{ id: str
         }
     };
 
+    const handleDeploy = async (network: string) => {
+        try {
+            const res = await fetch('/api/deploy', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ network })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                // Refresh deployment info
+                await fetchDeployment();
+            } else {
+                throw new Error(data.error || "Deployment failed");
+            }
+        } catch (err: any) {
+            throw err;
+        }
+    };
+
     // Helper to check if deployed contract matches generated one
     const isDeploymentLive = deployment && generatedCode.includes(`contract ${deployment.contractName}`);
 
@@ -184,6 +214,17 @@ export default function ProjectWorkspace({ params }: { params: Promise<{ id: str
                             </>
                         )}
                     </Button>
+                    {showCode && contractName && (
+                        <Button
+                            size="sm"
+                            variant="default"
+                            onClick={() => setDeployModalOpen(true)}
+                            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                        >
+                            <Rocket className="mr-2 h-4 w-4" />
+                            Deploy Contract
+                        </Button>
+                    )}
                 </div>
             </div>
 
@@ -379,6 +420,15 @@ export default function ProjectWorkspace({ params }: { params: Promise<{ id: str
                 </ResizablePanel>
 
             </ResizablePanelGroup>
+
+            {/* Deployment Modal */}
+            <DeploymentModal
+                isOpen={deployModalOpen}
+                onClose={() => setDeployModalOpen(false)}
+                contractName={contractName}
+                network="localhost"
+                onDeploy={handleDeploy}
+            />
         </div>
     );
 }
