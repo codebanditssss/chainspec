@@ -10,7 +10,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Markdown content is required' }, { status: 400 });
         }
 
-        console.log("📝 Parsing Markdown Spec...");
+        console.log("Parsing Markdown Spec...");
 
         // 1. Parse the Spec
         const spec = SpecParser.parse(markdown);
@@ -20,7 +20,7 @@ export async function POST(req: Request) {
         // For now, simple fallback or use provided param.
         const template = templateName || (spec.contractName.toLowerCase().includes('vault') ? 'DAOVault_Template' : 'ERC20_Template');
 
-        console.log(`🏭 Generating Contract using template: ${template}`);
+        console.log(`Generating Contract using template: ${template}`);
 
         // 3. Generate Code
         const code = SolidityGenerator.generateContract(spec, template);
@@ -30,9 +30,9 @@ export async function POST(req: Request) {
         try {
             // Note: In deployed Vercel env, filesystem is read-only. This only works locally.
             savedPath = SolidityGenerator.writeToFile(code, spec.contractName);
-            console.log(`💾 Saved to: ${savedPath}`);
+            console.log(`Saved to: ${savedPath}`);
         } catch (err) {
-            console.warn('⚠️ Could not save file to disk (expected if on Vercel):', err);
+            console.warn('Could not save file to disk (expected if on Vercel):', err);
         }
 
         return NextResponse.json({
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
         });
 
     } catch (error) {
-        console.error('❌ Generation Error:', error);
+        console.error('Generation Error:', error);
         return NextResponse.json({ error: 'Failed to generate contract', details: String(error) }, { status: 500 });
     }
 }
