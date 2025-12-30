@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-// {{IMPORTS}}
+{{IMPORTS}}
 // Example: import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 // Example: import "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -15,25 +15,25 @@ contract {{CONTRACT_NAME}} is {{INHERITANCE}} {
     // ==========================================
     // State Variables
     // ==========================================
-    // {{STATE_VARIABLES}}
+    {{STATE_VARIABLES}}
 
     // ==========================================
     // Events
     // ==========================================
-    // {{EVENTS}}
+    {{EVENTS}}
 
     // ==========================================
     // Constructor
     // ==========================================
     constructor({{CONSTRUCTOR_ARGS}}) {{CONSTRUCTOR_InHERITANCE}} {
-        // {{CONSTRUCTOR_LOGIC}}
+        {{CONSTRUCTOR_LOGIC}}
     }
 
     // ==========================================
     // Core Functions (Generated)
     // ==========================================
     
-    // {{FUNCTIONS}}
+    {{FUNCTIONS}}
 
     /* 
      * Example Generated Function Structure:
@@ -46,5 +46,5 @@ contract {{CONTRACT_NAME}} is {{INHERITANCE}} {
     // ==========================================
     // Overrides (Hooks)
     // ==========================================
-    // {{OVERRIDES}}
+    {{OVERRIDES}}
 }

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-// import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 // Example: import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 // Example: import "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -15,30 +15,30 @@ contract ECOToken is ERC20 {
     // ==========================================
     // State Variables
     // ==========================================
-    // // No custom state variables
+    // No custom state variables
 
     // ==========================================
     // Events
     // ==========================================
-    // // No custom events
+    // No custom events
 
     // ==========================================
     // Constructor
     // ==========================================
     constructor() ERC20("DefaultToken", "DFT") {
-        // // No constructor logic
+        // No constructor logic
     }
 
     // ==========================================
     // Core Functions (Generated)
     // ==========================================
     
-    // /**
+    /**
          * @notice 
-         * @param  to
-         * @param  amount
+         * @param to address
+         * @param amount uint256
          */
-    function mint(to , amount ) public  {
+    function mint(address to, uint256 amount) public  {
         // TODO: Implement function logic
         // _mint(to, amount);
     }
@@ -54,5 +54,5 @@ contract ECOToken is ERC20 {
     // ==========================================
     // Overrides (Hooks)
     // ==========================================
-    // {{OVERRIDES}}
+    
 }

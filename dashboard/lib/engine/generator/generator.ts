@@ -31,6 +31,7 @@ export class SolidityGenerator {
         template = this.replacePlaceholder(template, 'CONSTRUCTOR_InHERITANCE', this.generateConstructorInheritance(spec));
         template = this.replacePlaceholder(template, 'CONSTRUCTOR_LOGIC', this.generateConstructorLogic(spec));
         template = this.replacePlaceholder(template, 'FUNCTIONS', this.generateFunctions(spec.functions));
+        template = this.replacePlaceholder(template, 'OVERRIDES', '');
 
         // Template-specific placeholders
         if (templateName === 'DAOVault_Template') {

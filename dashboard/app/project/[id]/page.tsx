@@ -26,7 +26,7 @@ ECOToken
 1. **Access Control**: Only the admin can mint.
 2. **Pausable**: Emergency stop mechanism required.
 
-## Function: mint(to, amount)
+## Function: mint(address to, uint256 amount)
 - Precondition: Caller is admin
 - Postcondition: Balance increases
 `;
