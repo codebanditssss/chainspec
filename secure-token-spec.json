@@ -1,0 +1,3 @@
+{
+    "markdown": "# ERC20 Token Specification\n\n## Contract Name\nSecureToken\n\n## Security Requirements\n- Access control: Only owner can mint new tokens\n- State invariant: Total supply equals sum of all balances\n- No reentrancy vulnerabilities possible\n\n## Function: mint(address to, uint256 amount)\n- Precondition: Caller is owner\n- Postcondition: Balance of 'to' increases by amount\n- Postcondition: Total supply increases by amount"
+}
