@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-.md
-status.md
-=======
-.md
+node_modules
 .env
-.env.example
-node_modules/
-package-lock.json
-package.json
-tsconfig.json
->>>>>>> engine
+.md

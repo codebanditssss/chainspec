@@ -1,0 +1,202 @@
+{
+  "contractName": "MyToken",
+  "securityRequirements": [
+    "Access control: Only owner can mint new tokens",
+    "State invariant: Total supply equals sum of all balances",
+    "No reentrancy vulnerabilities possible",
+    "No overflow/underflow vulnerabilities (use SafeMath or Solidity 0.8+)",
+    "Transfer events must be emitted for all balance changes"
+  ],
+  "functions": [
+    {
+      "name": "constructor",
+      "description": "Initialize the ERC20 token with name and symbol",
+      "parameters": [
+        {
+          "type": "string",
+          "name": "name"
+        },
+        {
+          "type": "string",
+          "name": "symbol"
+        }
+      ],
+      "preconditions": [
+        "Called once during deployment"
+      ],
+      "postconditions": [
+        "Token name and symbol are set"
+      ],
+      "security": "Public, no restrictions",
+      "events": [],
+      "returns": "None"
+    },
+    {
+      "name": "mint",
+      "description": "Create new tokens and assign them to an address",
+      "parameters": [
+        {
+          "type": "address",
+          "name": "to"
+        },
+        {
+          "type": "uint256",
+          "name": "amount"
+        }
+      ],
+      "preconditions": [
+        "Caller must be the contract owner"
+      ],
+      "postconditions": [
+        "Balance of `to` increases by `amount`",
+        "totalSupply increases by `amount`"
+      ],
+      "security": "Only owner can call (onlyOwner modifier required)",
+      "events": [
+        "Emit Transfer(address(0)",
+        "to",
+        "amount)"
+      ],
+      "returns": "bool success"
+    },
+    {
+      "name": "transfer",
+      "description": "Transfer tokens from caller to recipient",
+      "parameters": [
+        {
+          "type": "address",
+          "name": "to"
+        },
+        {
+          "type": "uint256",
+          "name": "amount"
+        }
+      ],
+      "preconditions": [
+        "Caller must have balance >= amount",
+        "recipient address != 0x0"
+      ],
+      "postconditions": [
+        "Caller balance decreases by amount",
+        "recipient balance increases by amount"
+      ],
+      "security": "Public, sender must have sufficient balance",
+      "events": [
+        "Emit Transfer(msg.sender",
+        "to",
+        "amount)"
+      ],
+      "returns": "bool success"
+    },
+    {
+      "name": "approve",
+      "description": "Approve spender to transfer tokens on behalf of caller",
+      "parameters": [
+        {
+          "type": "address",
+          "name": "spender"
+        },
+        {
+          "type": "uint256",
+          "name": "amount"
+        }
+      ],
+      "preconditions": [
+        "Caller is token holder"
+      ],
+      "postconditions": [
+        "Spender allowance is set to amount"
+      ],
+      "security": "Public, any token holder can approve",
+      "events": [
+        "Emit Approval(msg.sender",
+        "spender",
+        "amount)"
+      ],
+      "returns": "bool success"
+    },
+    {
+      "name": "transferFrom",
+      "description": "Transfer tokens on behalf of another address using allowance",
+      "parameters": [
+        {
+          "type": "address",
+          "name": "from"
+        },
+        {
+          "type": "address",
+          "name": "to"
+        },
+        {
+          "type": "uint256",
+          "name": "amount"
+        }
+      ],
+      "preconditions": [
+        "Caller has allowance >= amount from `from` address",
+        "from has balance >= amount"
+      ],
+      "postconditions": [
+        "From balance decreases by amount",
+        "to balance increases by amount",
+        "allowance decreases by amount"
+      ],
+      "security": "Uses allowance mechanism, validates allowance before transfer",
+      "events": [
+        "Emit Transfer(from",
+        "to",
+        "amount)"
+      ],
+      "returns": "bool success"
+    }
+  ],
+  "stateVariables": [
+    {
+      "name": "balances",
+      "type": "mapping(address => uint256)",
+      "description": "Token balances for each address"
+    },
+    {
+      "name": "allowances",
+      "type": "mapping(address => mapping(address => uint256))",
+      "description": "Approved spending allowances"
+    },
+    {
+      "name": "totalSupply",
+      "type": "uint256",
+      "description": "Total token supply"
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "description": "Token name"
+    },
+    {
+      "name": "symbol",
+      "type": "string",
+      "description": "Token symbol"
+    },
+    {
+      "name": "owner",
+      "type": "address",
+      "description": "Contract owner (can mint)"
+    }
+  ],
+  "events": [
+    {
+      "name": "Transfer",
+      "parameters": "address indexed from, address indexed to, uint256 value",
+      "description": "Emitted on token transfers"
+    },
+    {
+      "name": "Approval",
+      "parameters": "address indexed owner, address indexed spender, uint256 value",
+      "description": "Emitted on approvals"
+    }
+  ],
+  "stateInvariants": [
+    "totalSupply == sum(balances[all addresses])",
+    "allowances[owner][spender] >= 0",
+    "balances[address] >= 0 (enforced by Solidity 0.8+)"
+  ]
+}

@@ -81,16 +81,21 @@ export class SpecParser {
         for (const line of lines) {
             const match = line.match(/-\s*`([^`]+)`\s*-\s*(.+)/);
             if (match) {
-                const declaration = match[1];
-                const description = match[2];
+                const declaration = match[1].trim();
+                const description = match[2].trim();
 
                 // Parse the declaration to extract type and name
-                const varMatch = declaration.match(/(\S+)\s+(\S+)/);
-                if (varMatch) {
+                // For complex types like "mapping(address => uint256) balances"
+                // We need to find the last word as the variable name
+                const parts = declaration.split(/\s+/);
+                if (parts.length >= 2) {
+                    const name = parts[parts.length - 1];
+                    const type = parts.slice(0, -1).join(' ');
+
                     variables.push({
-                        name: varMatch[2],
-                        type: varMatch[1],
-                        description: description.trim(),
+                        name: name,
+                        type: type,
+                        description: description,
                     });
                 }
             }
