@@ -24,7 +24,7 @@ export class SpecParser {
     }
     // Extract contract name from markdown
     private static extractContractName(content: string): string {
-        const match = content.match(/##\s*Contract Name\s*\n+([^\n]+)/i);
+        const match = content.match(/##\s*Contract Name\s*[\r\n]+([^\r\n]+)/i);
         return match ? match[1].trim() : 'UnnamedContract';
     }
 
