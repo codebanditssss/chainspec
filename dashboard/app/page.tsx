@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Zap, Shield, Code, FileCode } from "lucide-react";
+import { ArrowRight, Zap, Shield, Code, FileCode, Terminal } from "lucide-react";
 
 export default function LandingPage() {
     return (
@@ -28,11 +28,17 @@ export default function LandingPage() {
                     </p>
 
                     {/* CTA Buttons */}
-                    <div className="flex gap-4 justify-center pt-4">
+                    <div className="flex gap-4 justify-center pt-4 flex-wrap">
                         <Link href="/dashboard">
                             <Button size="lg" className="gap-2">
                                 Get Started
                                 <ArrowRight className="h-4 w-4" />
+                            </Button>
+                        </Link>
+                        <Link href="/guide">
+                            <Button size="lg" variant="secondary" className="gap-2">
+                                <Terminal className="h-4 w-4" />
+                                Setup Guide
                             </Button>
                         </Link>
                         <a
