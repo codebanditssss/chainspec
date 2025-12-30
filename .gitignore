@@ -1,5 +1,4 @@
 node_modules
 .env
+status.md
 .md
-/src/generated/prisma
-*.md

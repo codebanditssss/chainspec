@@ -3,8 +3,8 @@ import path from 'path';
 import { ContractSpec, FunctionSpec, StateVariable, EventSpec, FunctionParameter } from '../types/spec.types';
 
 export class SolidityGenerator {
-    private static readonly TEMPLATES_DIR = path.join(__dirname, '../../contracts/templates');
-    private static readonly OUTPUT_DIR = path.join(__dirname, '../../contracts/generated');
+    private static readonly TEMPLATES_DIR = path.join(process.cwd(), '../contracts/templates');
+    private static readonly OUTPUT_DIR = path.join(process.cwd(), '../contracts/generated');
 
     /**
      * Generate Solidity contract from specification
@@ -31,6 +31,7 @@ export class SolidityGenerator {
         template = this.replacePlaceholder(template, 'CONSTRUCTOR_InHERITANCE', this.generateConstructorInheritance(spec));
         template = this.replacePlaceholder(template, 'CONSTRUCTOR_LOGIC', this.generateConstructorLogic(spec));
         template = this.replacePlaceholder(template, 'FUNCTIONS', this.generateFunctions(spec.functions));
+        template = this.replacePlaceholder(template, 'OVERRIDES', '');
 
         // Template-specific placeholders
         if (templateName === 'DAOVault_Template') {

@@ -7,9 +7,7 @@ export class SpecParser {
     // @param filePath - Path to the markdown file
     // @returns Parsed contract specification
 
-    static parseSpecFile(filePath: string): ContractSpec {
-        const content = fs.readFileSync(filePath, 'utf-8');
-
+    static parse(content: string): ContractSpec {
         return {
             contractName: this.extractContractName(content),
             securityRequirements: this.extractSecurityRequirements(content),
@@ -19,9 +17,14 @@ export class SpecParser {
             stateInvariants: this.extractStateInvariants(content),
         };
     }
+
+    static parseSpecFile(filePath: string): ContractSpec {
+        const content = fs.readFileSync(filePath, 'utf-8');
+        return this.parse(content);
+    }
     // Extract contract name from markdown
     private static extractContractName(content: string): string {
-        const match = content.match(/##\s*Contract Name\s*\n+([^\n]+)/i);
+        const match = content.match(/##\s*Contract Name\s*[\r\n]+([^\r\n]+)/i);
         return match ? match[1].trim() : 'UnnamedContract';
     }
 

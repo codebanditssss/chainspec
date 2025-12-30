@@ -19,11 +19,14 @@ import { Play, Save, CheckCircle2, AlertTriangle, FileText, Code2 } from "lucide
 // Mock Data (Simulating what parser would output)
 const mockSpec = `# ECO Token Specification
 
+## Contract Name
+ECOToken
+
 ## Security Requirements
 1. **Access Control**: Only the admin can mint.
 2. **Pausable**: Emergency stop mechanism required.
 
-## Function: mint(to, amount)
+## Function: mint(address to, uint256 amount)
 - Precondition: Caller is admin
 - Postcondition: Balance increases
 `;
@@ -66,13 +69,34 @@ export default function ProjectWorkspace({ params }: { params: Promise<{ id: str
     const [isCompiling, setIsCompiling] = useState(false);
     const [showCode, setShowCode] = useState(false);
 
-    const handleGenerate = () => {
+    const [generatedCode, setGeneratedCode] = useState("");
+    const [error, setError] = useState("");
+
+    const handleGenerate = async () => {
         setIsCompiling(true);
-        // Simulate API delay
-        setTimeout(() => {
+        setError("");
+
+        try {
+            const res = await fetch('/api/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ markdown: mockSpec }) // In future, use editor state
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                setGeneratedCode(data.code);
+                setShowCode(true);
+            } else {
+                console.error("Generation failed:", data.error);
+                setError(data.error);
+            }
+        } catch (err) {
+            console.error("API Call failed:", err);
+            setError("Failed to connect to generator engine.");
+        } finally {
             setIsCompiling(false);
-            setShowCode(true);
-        }, 1500);
+        }
     };
 
     return (
@@ -148,7 +172,7 @@ export default function ProjectWorkspace({ params }: { params: Promise<{ id: str
                                     customStyle={{ margin: 0, height: '100%', fontSize: '14px', lineHeight: '1.5' }}
                                     showLineNumbers={true}
                                 >
-                                    {mockSolidity}
+                                    {generatedCode}
                                 </SyntaxHighlighter>
                             </div>
                         ) : (
